@@ -1,17 +1,17 @@
 CC=gcc
-CFLAGS=-g -Wall
+CFLAGS=-Wall
 LDFLAGS=
-EXECUTABLE=motorcontrol
 SRCFILES=main.c shellinput.c
 OBJECTS=$(SRCFILES:.c=.o)
+EXECUTABLE=motorcontrol
 
 all: $(SRCFILES) $(EXECUTABLE)
 
-$(EXECUTABLE): $(OBJECTS) 
-    $(CC) $(LDFLAGS) $(OBJECTS) -o $@
-
 .c.o:
-    $(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) $< -c -o $@
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
 clean:
-    rm *.o $(EXECUTABLE)
+	rm -f *.o $(EXECUTABLE)

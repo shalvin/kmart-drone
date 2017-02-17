@@ -1,19 +1,30 @@
 #include "shellinput.h"
+#include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+
+#define ARRAYSIZE(a) (sizeof(a) / sizeof(a[0]))
 
 #define BUFFER_SIZE 1024
 
-const char** commandWords = {
+
+static const char* commandWords[] = {
     "reset",
     "go",
 };
 
+typedef void(CommandFunction)(const char** args);
+// static CommandFunction* commandFunctions = {
+    
+// };
 
-static char* ReadLine()
+
+static char* read_line()
 {
-    uint32_t bufferSize = BUFFER_SIZE * sizeof(char);
-    char* buffer = malloc(bufferSize);
-    uint32_t position = 0; 
+    int bufferSize = BUFFER_SIZE * sizeof(char);
+    char* buffer = (char*)malloc(bufferSize);
+    int position = 0; 
     while (true)
     {
         int32_t c = getchar();
@@ -35,15 +46,81 @@ static char* ReadLine()
 }
 
 
-static char** SplitLine(const char* line, uint32_t lineLen)
+void split_line(const char* line, char*** outList, int* outSize)
 {
+    int capacity = 4;
+    int index = 0;
+    char** splitList = malloc(capacity * sizeof(char*));
 
+    // Create a non-const copy of line
+    int lineLen = strlen(line);
+    char* tmpLine = (char*)malloc((lineLen + 1) * sizeof(char));
+    strncpy(tmpLine, line, lineLen);
+
+    char* token = strtok(tmpLine, " ");
+    while (token)
+    {
+        if (index >= capacity)
+        {
+            capacity = capacity * 2 + 4;
+            splitList = (char**)realloc(splitList, capacity);
+        }
+        int tokenLen = strlen(token);
+        splitList[index] = (char*)malloc((tokenLen + 1) * sizeof(char)); // +1 for null term
+        strncpy(splitList[index], token, tokenLen);
+        splitList[index][tokenLen + 1] = '\0';
+        token = strtok(NULL, " ");
+        index++;
+    }
+    *outList = splitList;
+    *outSize = index;
 }
 
 
-void ShellInputLoop()
+void free_split_lines(char** list, int size)
 {
-    char* line = ReadLine();
+    for (int i = 0; i < size; i++)
+    {
+        free(list[i]);
+    }
+    free(list);
+}
 
-    free(line);
+
+void parse_line(char** args, int argsSize)
+{
+    if (argsSize <= 0)
+    {
+        return;
+    }
+
+    const char* command = args[0];
+    for (int i = 0; i < ARRAYSIZE(commandWords); i++)
+    {
+        if (strcmp(command, commandWords[i]) == 0)
+        {
+
+        }
+    }
+
+    printf("%s\n", command);
+}
+
+
+void shell_read_line_loop()
+{
+    while (true)
+    {
+        char* line = read_line();
+
+        char** splitLineList;
+        int splitLineSize;
+        split_line(line, &splitLineList, &splitLineSize);
+
+        parse_line(splitLineList, splitLineSize);
+
+        free_split_lines(splitLineList, splitLineSize);
+
+        free(line);
+    }
 }
