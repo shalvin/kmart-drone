@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-Wall
 LDFLAGS=
-SRCFILES=main.c shellinput.c
+SRCFILES=main.c shellinput.c commands.c
 OBJECTS=$(SRCFILES:.c=.o)
 EXECUTABLE=motorcontrol
 

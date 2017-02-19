@@ -1,4 +1,5 @@
 #include "shellinput.h"
+#include "commands.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -7,17 +8,6 @@
 #define ARRAYSIZE(a) (sizeof(a) / sizeof(a[0]))
 
 #define BUFFER_SIZE 1024
-
-
-static const char* commandWords[] = {
-    "reset",
-    "go",
-};
-
-typedef void(CommandFunction)(const char** args);
-// static CommandFunction* commandFunctions = {
-    
-// };
 
 
 static char* read_line()
@@ -99,11 +89,9 @@ void parse_line(char** args, int argsSize)
     {
         if (strcmp(command, commandWords[i]) == 0)
         {
-
+            (commandFunctions[i])(argsSize - 1, (const char**)(args + 1));
         }
     }
-
-    printf("%s\n", command);
 }
 
 
@@ -111,6 +99,7 @@ void shell_read_line_loop()
 {
     while (true)
     {
+        printf("> ");
         char* line = read_line();
 
         char** splitLineList;
