@@ -17,7 +17,7 @@ static char* read_line()
     int position = 0; 
     while (true)
     {
-        int32_t c = getchar();
+        int c = getchar();
         if (c == '\n' || c == EOF)
         {
             // Terminate at a newline or end of file

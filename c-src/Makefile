@@ -1,6 +1,6 @@
 CC=gcc
-CFLAGS=-Wall
-LDFLAGS=
+CFLAGS=-Wall -std=c11
+LDFLAGS=-lwiringPi
 SRCFILES=main.c shellinput.c commands.c
 OBJECTS=$(SRCFILES:.c=.o)
 EXECUTABLE=motorcontrol
